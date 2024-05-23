@@ -1,0 +1,7 @@
+CLIENT_ID = "YOUR_CLIENT_ID_KEY_HERE"
+CLIENT_SECRET = "YOUR_CLIENT_SECRET_HERE"
+
+TARGET_SUBREDDIT = "pickleball"
+RATE_LIMIT = 840 # 14 minutes
+
+USER_AGENT = "pickleball-scraper by u/Lucapo01"
