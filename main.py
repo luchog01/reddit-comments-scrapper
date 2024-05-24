@@ -65,7 +65,7 @@ def main():
 
     # Save the updated posts DataFrame to the Excel file
     posts_df.to_excel(posts_excel_path, index=False)
-    
+
     # Iterate through each post and save its comments to the comments DataFrame
     for post_id in todays_posts_df['id']:
         post = reddit.submission(id=post_id)

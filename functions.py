@@ -32,8 +32,10 @@ def get_todays_posts(subreddit) -> pd.DataFrame:
     # Convert the datetime to Central Time
     central = pytz.timezone('US/Central')
     df['created_central'] = df['created_utc'].dt.tz_localize(pytz.utc).dt.tz_convert(central)
+
+    # Make created_central timezone unaware
+    df['created_central'] = df['created_central'].dt.tz_localize(None)
     
-    print(df.head())
     return df
 
 def get_comments(post) -> pd.DataFrame:
@@ -67,5 +69,8 @@ def get_comments(post) -> pd.DataFrame:
     # Convert the datetime to Central Time
     central = pytz.timezone('US/Central')
     df['created_central'] = df['created_utc'].dt.tz_localize(pytz.utc).dt.tz_convert(central)
+
+    # Make created_central timezone unaware
+    df['created_central'] = df['created_central'].dt.tz_localize(None)
 
     return df
