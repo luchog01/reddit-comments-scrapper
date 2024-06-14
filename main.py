@@ -10,7 +10,7 @@ import praw
 from functions import get_todays_posts, get_comments
 from prawcore.exceptions import TooManyRequests
 from time import sleep
-from settings import CLIENT_ID, CLIENT_SECRET, USER_AGENT, RATE_LIMIT, TARGET_SUBREDDIT
+from settings import CLIENT_ID, CLIENT_SECRET, USER_AGENT, RATE_LIMIT, TARGET_SUBREDDIT, DELAY_PER_POST
 
 # Define the directory paths
 module_dir = os.path.dirname(__file__)
@@ -23,7 +23,7 @@ if not os.path.exists(results_dir):
 # Define the path to the Excel file that will store the top posts of the day
 posts_excel_path = os.path.join(results_dir, 'posts.xlsx')
 if os.path.exists(posts_excel_path):
-    posts_df = pd.read_excel(posts_excel_path)
+    posts_df = pd.read_excel(posts_excel_path, engine='openpyxl')
 else:
     posts_df = None
 
@@ -68,6 +68,8 @@ def main():
 
     # Iterate through each post and save its comments to the comments DataFrame
     for post_id in todays_posts_df['id']:
+        print(f"Collecting comments for post {post_id}")
+        sleep(DELAY_PER_POST)  # Delay between each post to avoid rate limiting
         post = reddit.submission(id=post_id)
         todays_comments_df = get_comments(post)
         if comments_df is None:
@@ -87,7 +89,9 @@ while True:
         main()
         break  # Exit the loop if the main function completes successfully
     except TooManyRequests as e:
+        print(e)
+        retry_after = int(e.retry_after) if e.retry_after else 60
         # Handle rate limit exceptions by sleeping for the required time before retrying
-        print(f"Rate limit exceeded. Please wait {e.retry_after} seconds before re-trying this request.")
-        print(f"Sleeping for {int(e.retry_after) * 2} seconds and then re-trying.")
-        sleep(int(e.retry_after) * 2)
+        print(f"Rate limit exceeded. Please wait {retry_after} seconds before re-trying this request.")
+        print(f"Sleeping for {int(retry_after) * 2} seconds and then re-trying.")
+        sleep(int(retry_after) * 2)

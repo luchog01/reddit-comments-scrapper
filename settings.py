@@ -4,4 +4,6 @@ CLIENT_SECRET = "YOUR_CLIENT_SECRET_HERE"
 TARGET_SUBREDDIT = "pickleball"
 RATE_LIMIT = 840 # 14 minutes
 
+DELAY_PER_POST = 120 # 2 minutes
+
 USER_AGENT = "pickleball-scraper by u/Lucapo01"
